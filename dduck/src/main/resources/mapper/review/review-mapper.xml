@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="review">
+ 
+	<select id="selectReviewCount" resultType="_int">
+	 select count(*) from review where pCode=#{pCode}
+	</select>
+	<select id="selectReviewList" resultType="map" parameterType="_int">
+		SELECT * from REVIEW where pCode=#{pCode} ORDER BY reviewen DESC
+	</select>
+	
+	<insert id="insertReview" parameterType="review">
+		INSERT INTO review VALUES (seq_reviewno.nextval, #{cId }, #{pCode}, sysdate, #{reviewContent}, #{reviewStar})
+	</insert> 
+	
+	<delete id="deleteReview" parameterType="review">
+		delete from review where reviewno=#{reviewNo }
+	</delete>
+	
+	<update id="updateReview" parameterType="review">
+		UPDATE REVIEW 
+			SET REVIEWCONTENT = #{reviewContent}
+		WHERE reviewno=#{reviewNo }
+	</update>
+	
+	<select id = "selectSale" resultType="map" parameterType="_int">
+		select * from SALEBOARD where pCode = #{pCode}
+	</select>
+
+	<select id = "selectAttachList" resultType="com.kh.dduck.adminboard.model.vo.SaleBoardFile" parameterType="_int">
+		select * from SaleBoardFile where pCode = #{pCode}
+	</select>
+	
+	<select id="selectReviewCount1" resultType="_int">
+	select count(*) from payment where pcode=#{pCode} and cid=#{cId}
+	</select>
+
+	
+</mapper>

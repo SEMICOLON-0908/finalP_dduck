@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="qna">
+<!-- qna List -->
+	<select id="selectQnaCount" resultType="_int">
+		select count(*) from qna
+	</select>
+
+	<select id="selectQnaList" resultType="map">
+		select * from qna left join qnacomment on (qna.qacode=qnacomment.qacode) ORDER BY QNA.QACODE DESC
+	</select>
+
+<!-- qna View -->
+	<select id="selectQna" resultType="map" parameterType="_int">
+		select * from qna where qacode=#{qaCode}
+	</select>
+	<select id="selectQnaComment" resultType="map" parameterType="_int">
+		select * from qnacomment where qacode=#{qaCode}
+	</select>
+
+<!-- qna comment -->
+	<insert id="insertQnaComment" parameterType="qnacomment">
+		INSERT INTO QNACOMMENT VALUES(seq_cmcode.nextval, #{qaCode}, #{cId}, #{cmContent}, DEFAULT)
+	</insert> 
+	
+	<delete id="qnaCommentDelete" parameterType="qnacomment">
+		delete from qnacomment where qacode=#{qaCode}
+	</delete>
+	
+	<update id="qnaCommentUpdate" parameterType="qnacomment">
+		UPDATE QNACOMMENT SET CMCONTENT=#{cmContent} WHERE qacode=#{qaCode}
+	</update>
+	
+<!-- qna -->
+	<insert id="insertQna" parameterType="qna">
+		INSERT INTO QNA VALUES(seq_qacode.nextval, #{cId}, #{qaTitle}, #{qaContent}, DEFAULT)
+	</insert> 
+	<update id="qnaUpdateFormEnd" parameterType="qna">
+		UPDATE QNA SET QATITLE=#{qaTitle} ,QACONTENT=#{qaContent} WHERE qacode=#{qaCode}
+	</update>
+	<delete id="qnaDelete" parameterType="qna">
+		delete from qna where qacode=#{qaCode}
+	</delete>
+</mapper>

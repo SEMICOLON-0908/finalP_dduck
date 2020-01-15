@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="board">
+
+<!-- 여기부터 검색기능 -->
+<!-- 	<select id="selectBoardCount" resultMap="int">
+		select count(*) from saleboard where salename like '%'||#{searchWord}||'%'
+	</select>
+	<select id="searchList" parameterType="HashMap" resultType="HashMap">
+		select * from saleboard where salename like '%'||#{searchWord}||'%' order by PCODE desc
+	</select> -->
+<!-- 여기까지 검색기능 -->
+
+  <select id="selectFile" resultType="map">
+       select * from saleboardfile
+  </select>
+
+   <select id="selectBoardCount" resultType="_int">
+      select count(*) from saleboard WHERE GCODE=#{gCode}
+   </select>
+    <select id="selectBoardCount2" resultType="_int">
+      select count(*) from saleboard where salename like '%'||#{searchWord}||'%'
+   </select>
+   <select id="selectBoardList" parameterType="map" resultType="map">
+      SELECT * FROM SALEBOARD WHERE GCODE=#{gCode} and salename like '%'||#{searchWord}||'%' ORDER BY PCODE DESC
+   </select>
+   <select id="searchList" resultType="map">
+      SELECT * FROM SALEBOARD WHERE salename like '%'||#{searchWord}||'%' ORDER BY PCODE DESC
+   </select>
+   <sql id="search">
+		and salename like '%'||#{searchWord}||'%'
+   </sql>
+   
+   <select id="selectBoardList2" resultType="map">
+      SELECT * FROM (SELECT * FROM SALEBOARD WHERE GCODE=1  ORDER BY PCODE DESC) WHERE ROWNUM <![CDATA[<]]> 4
+   </select>
+   
+    <select id="selectBoardList3" resultType="map">
+      SELECT * FROM (SELECT * FROM SALEBOARD WHERE GCODE=2 ORDER BY PCODE DESC) WHERE ROWNUM <![CDATA[<]]> 4
+   </select> 
+   
+    <select id="selectBoardList4" resultType="map">
+      SELECT * FROM (SELECT * FROM SALEBOARD WHERE GCODE=3 ORDER BY PCODE DESC) WHERE ROWNUM <![CDATA[<]]> 4
+   </select> 
+   <select id="selectBoardList5" resultType="map">
+      SELECT * FROM (SELECT * FROM SALEBOARD WHERE GCODE=4 ORDER BY PCODE DESC) WHERE ROWNUM <![CDATA[<]]> 4
+   </select> 
+   <select id="selectBoardList6" resultType="map">
+      SELECT * FROM (SELECT * FROM SALEBOARD WHERE GCODE=5 ORDER BY PCODE DESC) WHERE ROWNUM <![CDATA[<]]> 4
+   </select> 
+
+	<insert id="insertBoard" parameterType="map">
+		INSERT INTO SALEBOARD VALUES(SEQ_PCODE.NEXTVAL,#{gCode},#{saleName},#{salePrice},#{detailsInfo})
+		<selectKey keyProperty="pCode" resultType="string" order="AFTER">
+			SELECT SEQ_PCODE.CURRVAL FROM DUAL
+		</selectKey>
+	</insert>
+	<insert id="insertBoardFile" 
+	parameterType="com.kh.dduck.adminboard.model.vo.SaleBoardFile">
+		insert into saleboardFile values(seq_attachcode.nextval,#{pCode},default,#{attachReFileName},#{attachFlag})
+	</insert>
+	
+    <select id="selectSaleBoard" resultType="map" parameterType="_int">
+       select * from saleboard where pCode = #{pCode}
+    </select>	
+
+    <select id="selectSaleBoardFile" resultType="com.kh.dduck.adminboard.model.vo.SaleBoardFile" parameterType="_int">
+       select * from saleboardfile where pCode= #{pCode} 
+    </select>
+	   
+	<update id="updateBoard" parameterType="map">
+	     update saleboard set gcode=#{gCode},salename=#{saleName},saleprice=#{salePrice},detailsinfo=#{detailsInfo} 
+	     where pCode= #{pCode}
+	</update>
+	
+	<update id="updateBoardFile"
+	parameterType="com.kh.dduck.adminboard.model.vo.SaleBoardFile">
+	    update saleboardfile set attachEN=sysdate,attachrefilename=#{attachReFileName}  
+	    where pCode=#{pCode} <!-- and attachCode= #{attachCode} -->
+	</update>
+	
+	<delete id="deleteSaleBoard" parameterType="saleBoard">
+	    delete from saleBoard where pCode=#{pCode}
+	</delete>
+	
+	<delete id="deleteBoardFile" parameterType="_int">
+	   delete from saleBoardFile where pCode=#{pCode}
+	</delete>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="client">
+
+   <select id="selectClientOne" resultType="Client"
+      parameterType="Client">
+      SELECT * FROM CLIENT WHERE CID=#{cId}
+   </select>
+   
+   <insert id="insertClient" parameterType="client">
+      INSERT INTO CLIENT VALUES(#{cId},#{cPw},#{cName},#{cEmail},
+      #{cPhone},#{cAddr1},sysdate,#{cAddr2},#{cAddr3})
+
+   </insert>
+   
+   <update id="updateClient">
+      UPDATE CLIENT SET CEMAIL=#{cEmail}, CPHONE=#{cPhone}, CADDR1=#{cAddr1}, CADDR2=#{cAddr2}, CADDR3=#{cAddr3}
+       where CID = #{cId}
+   </update>
+
+   
+
+   <select id="selectClientList" resultType="map">
+      SELECT * FROM CLIENT 
+      <include refid="search" />
+       order by cen desc
+    </select>
+   <sql id="search">
+          where cName like '%'||#{keyword}||'%'
+    </sql>
+    
+    <select id="selectClientList2" resultType="map">
+      SELECT * FROM CLIENT order by cen desc
+    </select>
+   
+      
+   <select id="selectClientCount" resultType="_int">
+     select count(*) from client
+   </select>
+   
+    <select id="selectClientCount2" resultType="_int" parameterType="string">
+     select count(*) from client where cName like '%'||#{keyword}||'%'
+   </select>
+   
+   <!-- 비밀번호 변경 관련 mapper -->
+    <update id = "updatePw" >
+    update client set cPw=#{cPw} where cEmail=#{cEmail}
+    </update>
+    
+    <!--회원탈퇴  -->
+    <delete id="delete">
+<!--  			delete from Client where cId = #{cId}  -->
+ 			delete from client where cid=#{cId} and cpw=#{cPw}
+	</delete>
+	
+	<delete id="delete2">
+ 			delete from Client where cId = #{cId} 
+	</delete>
+	
+	<!--정보수정에서 비번변경  -->
+	<update id="updatePwChange">
+		update client set cPw=#{cPw} where cId=#{cId}
+	</update>
+
+ 	<select id="userIdCheck"  parameterType="String" resultType="int">
+     	 SELECT count(*) FROM client WHERE CID=#{cId}
+  	 </select>
+  	 
+  	 <select id="userMailCheck" parameterType="String" resultType="int">
+  	 	SELECT count(*) FROM client Where CEMAIL=#{cEmail}
+  	 </select>
+  	 
+  	 <select id="userMailCheck2" parameterType="String" resultType="int">
+  	 	SELECT count(*) FROM client Where CEMAIL=#{cEmail}
+  	 </select>
+
+  	 
+  	 
+  	 
+  	 
+  	 <select id = "searchId" resultType="Client" parameterType="Client">
+				select cid from client where cname=#{cName} and cPhone=#{cPhone}
+	</select>
+  	 
+  	 
+  	 
+  	 
+  	 
+
+
+	<!-- 장바구니 -->
+   <select id="selectPanierCount" resultType="_int">
+   select count(*) from panier
+   </select>
+   
+   <select id="selectPanierList" resultType="map">
+		select * from panier join saleboard using(pcode) join saleboardfile using(pcode) where attachflag = 1 and cId=#{cId}
+	</select>
+	
+	
+	<!-- 결제내역 -->
+   <select id="selectPaymentEndCount" resultType="_int">
+   select count(*) from payment
+   </select>
+   
+   <select id="selectPaymentEndList" resultType="map">
+		select * from payment join saleboard using(pcode) join saleboardfile using(pcode) where attachflag = 1 and cId=#{cId}
+	</select>
+	
+	
+
+	
+
+</mapper>
